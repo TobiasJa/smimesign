@@ -7,7 +7,7 @@ jobs:
   build-macos:
     strategy:
       matrix:
-        go-version: ["1.23"]
+        go-version: ["1.25"]
         os: [macos-latest]
     runs-on: ${{ matrix.os }}
     env:
@@ -41,7 +41,7 @@ jobs:
         with:
           # Note: this artifact is shared across jobs:
           # https://github.com/actions/upload-artifact#uploading-to-the-same-artifact
-          name: build
+          name: build_macos
           path: build/
       - name: Upload macOS files to the release
         # Pinned hash from https://github.com/softprops/action-gh-release/releases/tag/v2.0.8
@@ -53,7 +53,7 @@ jobs:
   build-windows:
     strategy:
       matrix:
-        go-version: ["1.23"]
+        go-version: ["1.25"]
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
     env:
@@ -95,6 +95,7 @@ jobs:
         uses: egor-tensin/setup-mingw@84c781b557efd538dec66bde06988d81cd3138cf
         with:
           platform: x86
+          version: 12.2.0
       - name: Build 386
         shell: bash
         run: |
@@ -126,7 +127,7 @@ jobs:
         with:
           # Note: this artifact is shared across jobs:
           # https://github.com/actions/upload-artifact#uploading-to-the-same-artifact
-          name: build
+          name: build_windows
           path: build/
       - name: Upload Windows files to the release
         # Pinned hash from https://github.com/softprops/action-gh-release/releases/tag/v2.0.8
