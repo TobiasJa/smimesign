@@ -101,7 +101,9 @@ jobs:
         run: |
           GOARCH=386 go build -o "build/386/smimesign.exe" -ldflags "-X main.versionString=${{ env.GIT_VERSION }}" .
       - name: Sign amd64 and 386
-        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          PFX_PASSWORD: ${{ secrets.PFX_PASSWORD }}
+        if: startsWith(github.ref, 'refs/tags/v') && env.PFX_PASSWORD != ''
         run: |
           .\windows-installer\signtool.exe sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /p ${{ secrets.PFX_PASSWORD }} /f windows-installer\codesign.pfx build/amd64/smimesign.exe
           .\windows-installer\signtool.exe sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /p ${{ secrets.PFX_PASSWORD }} /f windows-installer\codesign.pfx build/386/smimesign.exe
@@ -110,7 +112,9 @@ jobs:
         run: |
           GIT_VERSION=${{ env.GIT_VERSION }} BARE_GIT_VERSION=${{ env.BARE_GIT_VERSION }} iscc windows-installer/inno-setup-smimesign-installer.iss
       - name: Sign installer
-        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          PFX_PASSWORD: ${{ secrets.PFX_PASSWORD }}
+        if: startsWith(github.ref, 'refs/tags/v') && env.PFX_PASSWORD != ''
         run: |
           .\windows-installer\signtool.exe sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /p ${{ secrets.PFX_PASSWORD }} /f windows-installer\codesign.pfx build\installer\smimesign-windows-*.exe
       - name: Create zips for release upload
